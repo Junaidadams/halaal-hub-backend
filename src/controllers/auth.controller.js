@@ -43,6 +43,7 @@ export const login = async (req, res) => {
 };
 
 const sendVerificationEmail = (email, token) => {
+  console.log(process.env.CLIENT_URL);
   const verificationUrl = `${process.env.CLIENT_URL}/verifying-email?token=${token}`;
 
   const mailOptions = {
