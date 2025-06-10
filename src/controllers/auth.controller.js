@@ -8,9 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  host: "mail.roob.online",
-  port: 465,
-  secure: true,
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -38,7 +36,8 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  // const { email, password, role, username } = req.body;
+  const { email, password } = req.body;
+  console.log(`Connected - ${email}, ${password}`);
   return res.status(200).json({ message: "Connected" });
 };
 
