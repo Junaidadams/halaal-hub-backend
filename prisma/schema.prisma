@@ -1,0 +1,83 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+enum UserRole {
+  USER
+  ADMIN
+  BUSINESS
+}
+
+model User {
+  id                     Int                        @id @default(autoincrement())
+  username               String
+  password               String
+  email                  String                     @unique
+  avatarUrl              String?
+  bio                    String?
+  role                   String                     @default("user")
+  location               String?
+  createdAt              DateTime                   @default(now())
+
+  certificationPreferences CertificationPreference[]
+
+  savedListings          SavedListing[]
+  favouritedListings     FavouritedListing[]
+}
+
+
+
+
+
+model Listing {
+  id              Int                   @id @default(autoincrement())
+  businessName    String
+  category        String
+  lat             Float
+  lon             Float
+  googlePlaceId   String
+  createdAt       DateTime              @default(now())
+  savedByUsers    SavedListing[]
+  favouritedByUsers FavouritedListing[]
+}
+
+
+enum ListingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model SavedListing {
+  id        Int     @id @default(autoincrement())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+  listing   Listing @relation(fields: [listingId], references: [id])
+  listingId Int
+
+  @@unique([userId, listingId])
+}
+
+model FavouritedListing {
+  id        Int     @id @default(autoincrement())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+  listing   Listing @relation(fields: [listingId], references: [id])
+  listingId Int
+
+  @@unique([userId, listingId])
+}
+
+model CertificationPreference {
+  id       Int    @id @default(autoincrement())
+  name     String
+  user     User   @relation(fields: [userId], references: [id])
+  userId   Int
+}
+
