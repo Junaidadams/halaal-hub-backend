@@ -132,6 +132,7 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
   // Clear the token cookie to log the user out
+  console.log("Reached backend");
   res.clearCookie("token").status(200).json({ message: "Logout successful" });
 };
 
