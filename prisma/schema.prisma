@@ -7,47 +7,57 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 enum UserRole {
   USER
   ADMIN
   BUSINESS
 }
 
-model User {
-  id                     Int                        @id @default(autoincrement())
-  username               String                     @unique
-  password               String
-  email                  String                     @unique
-  avatarUrl              String?
-  bio                    String?
-  role                   String                     @default("user")
-  location               String?
-  createdAt              DateTime                   @default(now())
-  verified               Boolean                    @default(false)
-  certificationPreferences CertificationPreference[]
-
-  savedListings          SavedListing[]
-  favouritedListings     FavouritedListing[]
-}
-
-model Listing {
-  id              Int                   @id @default(autoincrement())
-  businessName    String
-  category        String
-  lat             Float
-  lon             Float
-  googlePlaceId   String
-  createdAt       DateTime              @default(now())
-  savedByUsers    SavedListing[]
-  favouritedByUsers FavouritedListing[]
-}
-
-
 enum ListingStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+model User {
+  id                       Int                        @id @default(autoincrement())
+  username                 String                     @unique
+  password                 String
+  email                    String                     @unique
+  avatarUrl                String?
+  bio                      String?
+  role                     String                     @default("user")
+  location                 Boolean?                  @default(false) 
+  createdAt                DateTime                   @default(now())
+  verified                 Boolean                    @default(false)
+  certificationPreferences CertificationPreference[]
+
+  savedListings            SavedListing[]
+  favouritedListings       FavouritedListing[]
+}
+
+model Listing {
+  id              Int                   @id @default(autoincrement())
+  name            String
+  description     String?
+  detailedDescription String?
+  lat             Float
+  lng             Float
+  address         String
+  googlePlaceLink String?
+  imageUrl        String?
+  category        String
+  certifiedBy     String?
+  isCertified     Boolean               @default(false)
+  stars           Int                   @default(0)
+  phone           String?
+  email           String?
+  website         String?
+  status          ListingStatus         @default(PENDING)
+  createdAt       DateTime              @default(now())
+
+  savedByUsers        SavedListing[]
+  favouritedByUsers   FavouritedListing[]
 }
 
 model SavedListing {
@@ -71,9 +81,8 @@ model FavouritedListing {
 }
 
 model CertificationPreference {
-  id       Int    @id @default(autoincrement())
-  name     String
-  user     User   @relation(fields: [userId], references: [id])
-  userId   Int
+  id     Int    @id @default(autoincrement())
+  name   String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
 }
-

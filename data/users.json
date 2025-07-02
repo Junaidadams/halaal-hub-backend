@@ -1,0 +1,73 @@
+[
+  {
+    "id": 1,
+    "username": "halalExplorer",
+    "password": "hashedpassword123", 
+    "email": "explorer@example.com",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/1.jpg",
+    "certificationPreference": ["SANHA", "NIHT"],
+    "savedListings": [101, 104],
+    "favouritedListings": [102, 105],
+    "bio": "Love finding hidden gems and local eats.",
+    "role": "user",
+    "location": "Cape Town, South Africa",
+    "createdAt": "2024-12-03T12:00:00Z"
+  },
+  {
+    "id": 2,
+    "username": "capeTownBites",
+    "password": "supersecurehashedpwd",
+    "email": "bites@capetown.co.za",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/2.jpg",
+    "certificationPreference": ["MJC"],
+    "savedListings": [103],
+    "favouritedListings": [101, 104],
+    "bio": "Foodie documenting Cape Town’s best Halaal spots.",
+    "role": "user",
+    "location": "Cape Town, South Africa",
+    "createdAt": "2025-01-15T09:30:00Z"
+  },
+  {
+    "id": 3,
+    "username": "adminUser",
+    "password": "adminhashedpw2025",
+    "email": "admin@nook.co.za",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/3.jpg",
+    "certificationPreference": [],
+    "savedListings": [],
+    "favouritedListings": [],
+    "bio": "Admin account for managing listings and users.",
+    "role": "admin",
+    "location": "Johannesburg, South Africa",
+    "createdAt": "2025-03-02T08:45:00Z"
+  }
+,
+  {
+    "id": 4,
+    "username": "gregorymiller",
+    "password": "826d3cbe3e7a874b066a7cfe313dff71c5c62a5cda2e313da6e3074e2f141a22",
+    "email": "rodriguezbarbara@yahoo.com",
+    "avatarUrl": "https://placeimg.com/128/128/any",
+    "certificationPreference": ["CICC", "MJC"],
+    "savedListings": [105, 109, 107],
+    "favouritedListings": [109],
+    "bio": "Network step activity allow environmental second for player.",
+    "role": "user",
+    "location": "Durban, South Africa",
+    "createdAt": "2025-01-11T12:07:20.329439"
+  },
+  {
+    "id": 5,
+    "username": "bjackson",
+    "password": "508235ef7160a24454b33d5b3842db25b015bd5fa403f81372af3102e1d8cbc0",
+    "email": "susanscott@cook.com",
+    "avatarUrl": "https://dummyimage.com/128x128",
+    "certificationPreference": ["NIHT"],
+    "savedListings": [108, 102],
+    "favouritedListings": [107, 101, 103, 106],
+    "bio": "Hard effort whose century almost deal community future.",
+    "role": "admin",
+    "location": "Cape Town, South Africa",
+    "createdAt": "2024-11-17T15:42:58.930372"
+  }
+]
