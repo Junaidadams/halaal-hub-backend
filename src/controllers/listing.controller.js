@@ -36,23 +36,20 @@ export const getListingsByLocation = async (req, res) => {
   }
 
   try {
-    const listings = await prisma.listing.findMany();
+    const listings = await prisma.$queryRaw`
+      SELECT 
+        l.*,
+        ST_Distance_Sphere(
+          POINT(${userLon}, ${userLat}),
+          POINT(l.lng, l.lat)
+        ) AS distance
+      FROM Listing l
+      ORDER BY distance ASC;
+    `;
 
-    const sortedListings = listings
-      .map((listing) => ({
-        ...listing,
-        distance: getDistanceFromLatLonInKm(
-          userLat,
-          userLon,
-          listing.lat,
-          listing.lon
-        ),
-      }))
-      .sort((a, b) => a.distance - b.distance);
-
-    return res.status(200).json(sortedListings);
+    return res.status(200).json(listings);
   } catch (err) {
-    console.error(err.message);
+    console.error("Error fetching listings:", err.message);
     return res.status(500).json({ message: "Server error loading listings" });
   }
 };
