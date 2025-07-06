@@ -149,3 +149,53 @@ const sendVerificationEmail = (email, token) => {
   };
   return transporter.sendMail(mailOptions);
 };
+
+export const addSaved = async (req, res) => {
+  const { listingId, userId } = req.body;
+
+  try {
+    // Check if already saved
+    const existing = await prisma.savedListing.findFirst({
+      where: { userId, listingId },
+    });
+
+    if (existing) {
+      return res
+        .status(409) // HTTP conflict
+        .json({ message: "This listing is already saved." });
+    }
+
+    // Create new saved listing
+    const savedListing = await prisma.savedListing.create({
+      data: {
+        listingId,
+        userId,
+      },
+    });
+
+    return res.status(200).json({
+      message: "Listing saved successfully",
+      savedListing,
+    });
+  } catch (error) {
+    console.error("Error saving listing:", error);
+    return res.status(500).json({ message: "Failed to save listing." });
+  }
+};
+
+export const removeSaved = async (req, res) => {
+  const { listingId, userId } = req.body;
+
+  try {
+    await prisma.savedListing.deleteMany({
+      where: {
+        userId,
+        listingId,
+      },
+    });
+    return res.status(200).json({ message: "Listing removed successfully" });
+  } catch (error) {
+    console.error("Error removing saved listing:", error);
+    return res.status(500).json({ message: "Failed to remove listing." });
+  }
+};
