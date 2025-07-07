@@ -13,16 +13,6 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-export const getAllListings = async (req, res) => {
-  try {
-    const listings = await prisma.listing.findMany();
-    return res.status(200).json(listings);
-  } catch (err) {
-    console.error(err.message);
-    return res.status(500).json({ message: "Server error loading listings" });
-  }
-};
-
 export const getListingsByLocation = async (req, res) => {
   const { location } = req.query;
 
@@ -50,6 +40,40 @@ export const getListingsByLocation = async (req, res) => {
     return res.status(200).json(listings);
   } catch (err) {
     console.error("Error fetching listings:", err.message);
+    return res.status(500).json({ message: "Server error loading listings" });
+  }
+};
+
+export const getAllListings = async (req, res) => {
+  try {
+    const listings = await prisma.listing.findMany();
+    return res.status(200).json(listings);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({ message: "Server error loading listings" });
+  }
+};
+
+export const getSpecificListings = async (req, res) => {
+  let { ids } = req.body;
+
+  if (!ids || !Array.isArray(ids) || ids.length === 0) {
+    return res
+      .status(400)
+      .json({ message: "Invalid or missing ids in request body" });
+  }
+
+  try {
+    const listings = await prisma.listing.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+    return res.status(200).json(listings);
+  } catch (error) {
+    console.error("Error fetching specific listings:", error.message);
     return res.status(500).json({ message: "Server error loading listings" });
   }
 };

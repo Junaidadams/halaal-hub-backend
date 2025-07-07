@@ -32,7 +32,7 @@ model User {
   verified                 Boolean                    @default(false)
   certificationPreferences CertificationPreference[]
 
-  savedListings            SavedListing[]
+  savedListings            SavedListing[]            
   favouritedListings       FavouritedListing[]
 }
 
