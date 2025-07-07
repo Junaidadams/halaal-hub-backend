@@ -88,8 +88,6 @@ export const verifyEmail = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  // console.log(`Connected - ${email}, ${password}`);
-  // return res.status(200).json({ message: "Connected" });
 
   const normalizedEmail = email.toLowerCase();
   try {
@@ -98,6 +96,9 @@ export const login = async (req, res) => {
         email: {
           equals: normalizedEmail,
         },
+      },
+      include: {
+        savedListings: true,
       },
     });
 
@@ -123,7 +124,9 @@ export const login = async (req, res) => {
 
     const { password: userPassword, ...userInfo } = user;
 
-    res.status(200).json({ ...userInfo, token });
+    // Send token as a separate property, and user data (including savedListings) as userData
+    console.log(userInfo);
+    res.status(200).json({ token, ...userInfo });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Failed to log in" });
