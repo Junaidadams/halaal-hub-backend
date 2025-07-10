@@ -24,6 +24,31 @@ export const searchOSM = async (req, res) => {
   }
 };
 
+export const searchBusiness = async (req, res) => {
+  const { q } = req.query;
+
+  try {
+    const response = await axios.get(
+      "https://nominatim.openstreetmap.org/search",
+      {
+        params: {
+          q,
+          format: "json",
+          countrycodes: "za",
+        },
+        headers: {
+          "User-Agent": "HalaalHub/1.0 (junaidadams117@gmail.com)",
+        },
+      }
+    );
+
+    res.json(response.data);
+  } catch (err) {
+    console.error("Error proxying Nominatim request:", err.message);
+    res.status(500).json({ message: "Failed to search business" });
+  }
+};
+
 export const getAddressFromGeocode = async (req, res) => {
   const { query } = req.query;
   console.log("Received geocode request:");

@@ -13,6 +13,23 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
+export const bulkListingsUpdater = async (req, res) => {
+  const email = "seniorfrikkie@gmail.com";
+  try {
+    const updatedListings = await prisma.listing.updateMany({
+      where: { status: "PENDING" },
+      data: { ownerId: 3 },
+    });
+    res
+      .status(200)
+      .json({ message: "Updated successfully.", count: updatedListings.count });
+    console.log(`Updated ${updatedListings.count} listings.`);
+  } catch (error) {
+    console.error("Failed to update.", error);
+    res.status(500).json({ message: "Failed to update listings." });
+  }
+};
+
 export const getListingsByLocation = async (req, res) => {
   const { location } = req.query;
 

@@ -26,14 +26,15 @@ model User {
   email                    String                     @unique
   avatarUrl                String?
   bio                      String?
-  role                     String                     @default("user")
-  location                 Boolean?                  @default(false) 
+  role                     UserRole                   @default(USER) 
+  location                 Boolean?                   @default(false)
   createdAt                DateTime                   @default(now())
   verified                 Boolean                    @default(false)
-  certificationPreferences CertificationPreference[]
 
-  savedListings            SavedListing[]            
+  certificationPreferences CertificationPreference[]
+  savedListings            SavedListing[]
   favouritedListings       FavouritedListing[]
+  listings                 Listing[]                 
 }
 
 model Listing {
@@ -56,9 +57,13 @@ model Listing {
   status          ListingStatus         @default(PENDING)
   createdAt       DateTime              @default(now())
 
-  savedByUsers        SavedListing[]
-  favouritedByUsers   FavouritedListing[]
+  owner           User?                  @relation(fields: [ownerId], references: [id]) // 👈 Business owner
+  ownerId         Int?
+
+  savedByUsers    SavedListing[]
+  favouritedByUsers FavouritedListing[]
 }
+
 
 model SavedListing {
   id        Int     @id @default(autoincrement())
