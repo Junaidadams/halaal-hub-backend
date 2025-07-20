@@ -1,17 +1,17 @@
 import prisma from "../../lib/prisma.js";
 
-function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-  const R = 6371;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}
+// function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+//   const R = 6371;
+//   const dLat = ((lat2 - lat1) * Math.PI) / 180;
+//   const dLon = ((lon2 - lon1) * Math.PI) / 180;
+//   const a =
+//     Math.sin(dLat / 2) ** 2 +
+//     Math.cos((lat1 * Math.PI) / 180) *
+//       Math.cos((lat2 * Math.PI) / 180) *
+//       Math.sin(dLon / 2) ** 2;
+//   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+//   return R * c;
+// }
 
 export const bulkListingsUpdater = async (req, res) => {
   const email = "seniorfrikkie@gmail.com";
@@ -42,6 +42,9 @@ export const getListingsByLocation = async (req, res) => {
     return res.status(400).json({ message: "Invalid lat/lon format" });
   }
 
+  const take = parseInt(req.query.take, 10) || 10;
+  const skip = parseInt(req.query.skip, 10) || 0;
+
   try {
     const listings = await prisma.$queryRaw`
       SELECT 
@@ -51,7 +54,8 @@ export const getListingsByLocation = async (req, res) => {
           POINT(l.lng, l.lat)
         ) AS distance
       FROM Listing l
-      ORDER BY distance ASC;
+      ORDER BY distance ASC
+      LIMIT ${take} OFFSET ${skip};
     `;
 
     return res.status(200).json(listings);
@@ -63,7 +67,7 @@ export const getListingsByLocation = async (req, res) => {
 
 export const getAllListings = async (req, res) => {
   try {
-    const listings = await prisma.listing.findMany();
+    const listings = await prisma.listing.findMany({ take: 10 });
     return res.status(200).json(listings);
   } catch (err) {
     console.error(err.message);

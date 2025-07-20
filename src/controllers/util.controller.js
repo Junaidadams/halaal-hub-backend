@@ -82,3 +82,16 @@ export const getAddressFromGeocode = async (req, res) => {
       .json({ message: "Failed to fetch geocoding results" });
   }
 };
+
+export const reportIssue = async (req, res) => {
+  const { summary, description, page } = req.body;
+
+  if (!summary || !description || !page) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  // Here you would typically save the issue to a database or send an email
+  console.log("Issue reported:", { summary, description, page });
+
+  return res.status(200).json({ message: "Issue reported successfully" });
+};
