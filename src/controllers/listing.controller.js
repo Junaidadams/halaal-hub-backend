@@ -31,7 +31,7 @@ export const bulkListingsUpdater = async (req, res) => {
 };
 
 export const getListingsByLocation = async (req, res) => {
-  const { location } = req.query;
+  const { location, page = 1, limit = 10 } = req.query;
 
   if (!location) {
     return res.status(400).json({ message: "Missing location query param" });
@@ -42,10 +42,23 @@ export const getListingsByLocation = async (req, res) => {
     return res.status(400).json({ message: "Invalid lat/lon format" });
   }
 
-  const take = parseInt(req.query.take, 10) || 10;
-  const skip = parseInt(req.query.skip, 10) || 0;
+  const take = parseInt(limit, 10);
+  const skip = (parseInt(page, 10) - 1) * take;
 
   try {
+    // Fetch total count for pagination
+    const totalCountResult = await prisma.$queryRaw`
+      SELECT COUNT(*) as total
+      FROM Listing l
+    `;
+    let totalCount = totalCountResult[0]?.total || 0;
+
+    // Convert BigInt to Number safely
+    if (typeof totalCount === "bigint") {
+      totalCount = Number(totalCount);
+    }
+
+    // Fetch listings with distance
     const listings = await prisma.$queryRaw`
       SELECT 
         l.*,
@@ -58,7 +71,12 @@ export const getListingsByLocation = async (req, res) => {
       LIMIT ${take} OFFSET ${skip};
     `;
 
-    return res.status(200).json(listings);
+    return res.status(200).json({
+      listings,
+      totalCount,
+      page: parseInt(page, 10),
+      totalPages: Math.ceil(totalCount / take),
+    });
   } catch (err) {
     console.error("Error fetching listings:", err.message);
     return res.status(500).json({ message: "Server error loading listings" });
@@ -66,9 +84,25 @@ export const getListingsByLocation = async (req, res) => {
 };
 
 export const getAllListings = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query; // get ?page=2&limit=10 from URL
+
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+
   try {
-    const listings = await prisma.listing.findMany({ take: 10 });
-    return res.status(200).json(listings);
+    const listings = await prisma.listing.findMany({
+      skip: skip,
+      take: parseInt(limit),
+      orderBy: { createdAt: "desc" }, // Optional: order newest first
+    });
+
+    const totalCount = await prisma.listing.count(); // For frontend to know total
+
+    return res.status(200).json({
+      listings,
+      totalCount,
+      page: parseInt(page),
+      totalPages: Math.ceil(totalCount / parseInt(limit)),
+    });
   } catch (err) {
     console.error(err.message);
     return res.status(500).json({ message: "Server error loading listings" });
