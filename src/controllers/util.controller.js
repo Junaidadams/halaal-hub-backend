@@ -95,3 +95,18 @@ export const reportIssue = async (req, res) => {
 
   return res.status(200).json({ message: "Issue reported successfully" });
 };
+
+export const suggestFeature = async (req, res) => {
+  const { summary, description } = req.body;
+
+  if (!summary || !description) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  // Here you would typically save the feature suggestion to a database or send an email
+  console.log("Feature suggested:", { summary, description });
+
+  return res
+    .status(200)
+    .json({ message: "Feature suggestion submitted successfully" });
+};
