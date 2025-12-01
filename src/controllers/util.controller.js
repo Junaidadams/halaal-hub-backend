@@ -24,6 +24,21 @@ export const searchOSM = async (req, res) => {
   }
 };
 
+export const searchAddress = async (req, res) => {
+  const { q } = req.query;
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=za&q=${encodeURIComponent(
+        q
+      )}`
+    );
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Search failed" });
+  }
+};
+
 export const searchBusiness = async (req, res) => {
   const { q } = req.query;
 
@@ -37,7 +52,7 @@ export const searchBusiness = async (req, res) => {
           countrycodes: "za",
         },
         headers: {
-          "User-Agent": "HalaalHub/1.0 (junaidadams117@gmail.com)",
+          "User-Agent": "EatHalal/1.0 (junaidadams117@gmail.com)",
         },
       }
     );
