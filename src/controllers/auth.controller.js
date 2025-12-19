@@ -134,8 +134,7 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  // Clear the token cookie to log the user out
-  console.log("Reached backend");
+  console.log("Reached backend, clearing token...");
   res.clearCookie("token").status(200).json({ message: "Logout successful" });
 };
 
@@ -157,18 +156,16 @@ export const addSaved = async (req, res) => {
   const { listingId, userId } = req.body;
 
   try {
-    // Check if already saved
     const existing = await prisma.savedListing.findFirst({
       where: { userId, listingId },
     });
 
     if (existing) {
       return res
-        .status(409) // HTTP conflict
+        .status(409)
         .json({ message: "This listing is already saved." });
     }
 
-    // Create new saved listing
     const savedListing = await prisma.savedListing.create({
       data: {
         listingId,

@@ -57,11 +57,38 @@ model Listing {
   status          ListingStatus         @default(PENDING)
   createdAt       DateTime              @default(now())
 
-  owner           User?                  @relation(fields: [ownerId], references: [id]) // 👈 Business owner
+  owner           User?                  @relation(fields: [ownerId], references: [id]) 
   ownerId         Int?
 
   savedByUsers    SavedListing[]
   favouritedByUsers FavouritedListing[]
+  openingHours     OpeningHour[]        
+
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+model OpeningHour {
+  id         Int        @id @default(autoincrement())
+
+  listing    Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingId  Int
+
+  day        DayOfWeek
+  opensAt    String     // "09:00"
+  closesAt   String     // "17:00"
+
+  isClosed   Boolean    @default(false)
+
+  @@unique([listingId, day])
 }
 
 
