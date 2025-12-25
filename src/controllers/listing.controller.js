@@ -92,10 +92,11 @@ export const getAllListings = async (req, res) => {
     const listings = await prisma.listing.findMany({
       skip: skip,
       take: parseInt(limit),
-      orderBy: { createdAt: "desc" }, // Optional: order newest first
+      orderBy: { createdAt: "desc" },
+      include: OpeningHour,
     });
 
-    const totalCount = await prisma.listing.count(); // For frontend to know total
+    const totalCount = await prisma.listing.count();
 
     return res.status(200).json({
       listings,
