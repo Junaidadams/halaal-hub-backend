@@ -83,8 +83,8 @@ model OpeningHour {
   listingId  Int
 
   day        DayOfWeek
-  opensAt    String    
-  closesAt   String     
+  opensAt    String?    
+  closesAt   String?     
 
   isClosed   Boolean    @default(false)
 

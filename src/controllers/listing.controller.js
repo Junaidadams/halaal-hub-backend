@@ -93,7 +93,7 @@ export const getAllListings = async (req, res) => {
       skip: skip,
       take: parseInt(limit),
       orderBy: { createdAt: "desc" },
-      include: OpeningHour,
+      include: { openingHours: true },
     });
 
     const totalCount = await prisma.listing.count();
@@ -131,5 +131,28 @@ export const getSpecificListings = async (req, res) => {
   } catch (error) {
     console.error("Error fetching specific listings:", error.message);
     return res.status(500).json({ message: "Server error loading listings" });
+  }
+};
+
+export const getListingById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const listing = await prisma.listing.findUnique({
+      where: { id: Number(id) },
+      include: {
+        openingHours: true,
+        owner: true,
+      },
+    });
+
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json(listing);
+  } catch (err) {
+    console.error("Error fetching listing:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
